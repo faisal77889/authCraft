@@ -122,5 +122,34 @@ export function authRouter<User>(
     }
   });
 
+  router.get("/refresh", async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const decoded = jwt.verify(
+      refreshToken,
+      config.jwtSecret
+    ) as jwt.JwtPayload;
+
+    const newAccessToken = jwt.sign(
+      { userId: decoded.userId },
+      config.jwtSecret,
+      { expiresIn: "15m" }
+    );
+
+    return res.status(200).json({
+      accessToken: newAccessToken,
+    });
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid or expired refresh token",
+    });
+  }
+});
+
   return router;
 }
