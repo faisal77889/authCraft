@@ -1,3 +1,4 @@
+import { authRouter } from "../auth/auth"
 import { createConfig } from "../config/createConfig"
 import connectMongodb from "../databaseConnection/mongoConnection"
 
@@ -25,6 +26,7 @@ export async function createMernKit(userConfig: any) {
     if(!config.auth.jwtSecret){
         throw new Error("providing the jwt secret is must for authentication")
     }
-    // const router = authRouter(config.auth)
+    
+    const authRouter = authRouter(config.auth)
 }
 
